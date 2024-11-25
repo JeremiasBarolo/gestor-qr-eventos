@@ -10,8 +10,8 @@ export class ApiService {
 
   // ENDPOSINTS
   public API_URL = 'http://localhost:8080';
-  public QR_URL = 'http://localhost:8080/api/v1/QR';
   public EVENTOS_URL = 'http://localhost:8080/api/v1/eventos';
+  public ENTRADAS_URL = 'http://localhost:8080/api/v1/entradas';
   public AUTH_URL = 'http://localhost:8080/api/v1/auth';
 
 
@@ -28,23 +28,23 @@ export class ApiService {
   // QR CRUD
 
   getQRs(): Observable<any> {
-    return this.http.get(`${this.QR_URL}`);
+    return this.http.get(`${this.ENTRADAS_URL}`);
   }
 
   getQR(id: number): Observable<any> {
-    return this.http.get(`${this.QR_URL}/${id}`);
+    return this.http.get(`${this.ENTRADAS_URL}/${id}`);
   }
 
   createQR(data: any): Observable<any> {
-    return this.http.post(this.QR_URL, data);
+    return this.http.post(this.ENTRADAS_URL, data);
   }
 
   updateQR(id: number, data: any): Observable<any> {
-    return this.http.patch(`${this.QR_URL}/${id}`, data);
+    return this.http.patch(`${this.ENTRADAS_URL}/${id}`, data);
   }
 
   deleteQR(id: number): Observable<any> {
-    return this.http.delete(`${this.QR_URL}/${id}`);
+    return this.http.delete(`${this.ENTRADAS_URL}/${id}`);
   }
 
 
@@ -91,6 +91,10 @@ export class ApiService {
 
   deleteEventos(id: number): Observable<any> {
     return this.http.delete(`${this.EVENTOS_URL}/${id}`);
+  }
+
+  agregarEntradas(cantidad:any){
+    return this.http.post(`${this.ENTRADAS_URL}/add`, {cantidad}).toPromise();
   }
 
 

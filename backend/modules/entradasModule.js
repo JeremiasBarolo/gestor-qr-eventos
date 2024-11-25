@@ -1,13 +1,48 @@
 const database = require('../db/database');
+const { v4: uuidv4 } = require('uuid');
 
-const getAllQRs = async (req, res) => {
+
+const leerQR = async (req, res) => {
     try {
-        const { query, release } = await database.connection();
-        const { id_usuario } = req.TOKEN_DATA;
+      const { query, release } = await database.connection();
+      const { uuid } = req.params;
+      
+      
+      const entrada = await query(`SELECT * FROM entradas WHERE uuid = '${uuid}'`);
+      
+      
+      const evento = await query(`SELECT fecha_evento FROM eventos WHERE id = '${entrada[0].id_evento}'`);
+      
+      
+      if (evento.length === 0) {
+          return res.status(404).json({ message: "Evento no encontrado" });
+      }
+      
+      
+      const fechaHoy = new Date().setHours(0, 0, 0, 0);  
+      const fechaEvento = new Date(evento[0].fecha_evento).setHours(0, 0, 0, 0);  
+      
+      
+        if (fechaHoy === fechaEvento) {
 
-        const QRs = await query(`SELECT * FROM QRS  WHERE id_usuario = ${id_usuario}`);
-        await release();
-        res.json(QRs);
+
+          if (entrada[0].usado == 0) {
+              
+              await query(`UPDATE entradas SET usado = 1 WHERE uuid = '${uuid}'`);
+              res.json({ message: "Entrada validada y marcada como utilizada." });
+
+          } else {
+              
+              res.status(400).json({ message: "Esta entrada ya ha sido utilizada." });
+          }
+
+
+      } else {
+          
+          res.status(400).json({ message: "La fecha del evento no coincide con la fecha actual." });
+      }
+
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -27,32 +62,45 @@ const getOneQR = async (req, res) => {
     }
 }
 
-const createQR = async (req, res) => {
+const generarEntradas = async (req, res) => {
     try {
-        const { query, release } = await database.connection();
-        const { id_usuario } = req.TOKEN_DATA;
-
-
-        await query(`INSERT INTO QRs (nombre, apellido, fecha_nacimiento, fecha_defuncion, genero, nacionalidad, dni, fecha_ingreso, id_parcela, id_usuario) 
-        VALUES (
-        '${req.body.nombre}', 
-        '${req.body.apellido}',
-        '${req.body.fecha_nacimiento}',
-        '${req.body.fecha_defuncion}', 
-        '${req.body.genero}',
-        '${req.body.nacionalidad}',
-        '${req.body.dni}',
-        '${req.body.fecha_ingreso}',
-        '',
-        '${id_usuario}'
-        )`
-        );
-        await release();
-        res.json('QR Creado');
+      const { query, release } = await database.connection();
+      const { id } = req.TOKEN_DATA;
+  
+      const { id_evento, cantidad } = req.body;
+  
+      if (!id_evento || !cantidad || cantidad <= 0) {
+        return res.status(400).json({ error: 'ID de evento y cantidad son requeridos.' });
+      }
+  
+      const entradas = [];
+  
+      
+      for (let i = 0; i < cantidad; i++) {
+        const uuid = uuidv4().replace(/-/g, '').slice(0, 11); 
+        entradas.push([uuid, 0, id_evento]);
+      }
+  
+      // Insertar las entradas en la base de datos
+      const values = entradas.map(() => `(?, ?, ?)`).join(', ');
+      const sql = `INSERT INTO entradas (uuid, usado, id_evento) VALUES ${values}`;
+      const flattenedValues = entradas.flat();
+  
+      await query(sql, flattenedValues);
+  
+      await release();
+   
+     
+  
+      // Responder con los QR generados
+      res.json({
+        message: 'QRs creados',
+        total: cantidad
+      });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-}
+  };
 
 const updateQR = async (req, res) => {
     try {
@@ -112,9 +160,9 @@ const deleteQR = async (req, res) => {
 }
 
 module.exports = {
-    getAllQRs,
+     leerQR,
     getOneQR,
-    createQR,
+    generarEntradas,
     updateQR,
     deleteQR
 }

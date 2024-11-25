@@ -2,7 +2,7 @@
 const express = require("express")
 const { 
     authModule,
-    qrModule,
+    entradasModule,
     eventosModule,
     middlewareModule
 
@@ -22,16 +22,16 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json()) 
 app.use(cors());
-app.use(middlewareModule.validateToken); 
+// app.use(middlewareModule.validateToken); 
 
 
 // QR
 
-app.get("/api/v1/QR/:id", qrModule.getOneQR);
-app.get("/api/v1/QR", qrModule.getAllQRs);
-app.post('/api/v1/QR', qrModule.createQR);
-app.patch('/api/v1/QR/:id', qrModule.updateQR);
-app.delete('/api/v1/QR/:id', qrModule.deleteQR);
+app.get("/api/v1/entradas/:id", entradasModule.getOneQR);
+app.get("/api/v1/validation/:uuid", entradasModule.leerQR);
+app.post('/api/v1/entradas', entradasModule.generarEntradas);
+app.patch('/api/v1/entradas/:id', entradasModule.updateQR);
+app.delete('/api/v1/entradas/:id', entradasModule.deleteQR);
 
 
 // EVENTOS

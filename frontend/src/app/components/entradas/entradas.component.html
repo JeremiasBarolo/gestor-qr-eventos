@@ -1,0 +1,12 @@
+<h1>{{evento?.nombre_evento}}</h1>
+
+<form (submit)="generarEntradas($event)">
+  <input type="number" name="cantidad_agregar" [(ngModel)]="cantidad_agregar">
+  <button>Agregar entradas</button>
+</form>
+
+
+<div *ngFor="let entrada of entradas">
+  <h5>Entrada ID: {{ entrada.id }}</h5>
+  <img [src]="entrada?.qrCode" alt="Código QR" style="width: 150px; height: 150px;">
+</div>

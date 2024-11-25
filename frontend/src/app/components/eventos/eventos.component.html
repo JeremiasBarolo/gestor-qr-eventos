@@ -1,0 +1,81 @@
+<div class="container mt-5">
+  <h1 class="text-center mb-4">¡Bienvenido a Mis Eventos!</h1>
+  <button class="btn btn-primary rounded-pill px-3" type="button" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="action = 'crear'" >Crear Evento</button>
+
+  <div class="row">
+    <div class="col-md-4" *ngFor="let evento of eventos">
+      <div class="card mb-3 shadow-sm">
+        <div class="card-header text-center">
+          {{ evento.nombre_evento }}
+        </div>
+        <div class="card-body">
+
+
+          <p class="card-text text-muted text-center">
+            Fecha: <strong>{{ evento.fecha_evento | date: 'dd/MM/yyyy' }}</strong>
+          </p>
+        </div>
+
+        <div class="card-footer text-body-secondary">
+          <button type="button" class="btn btn-secondary mr-3" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="editar(evento)">
+              Editar Evento
+          </button>
+          <button
+          type="button"
+          class="btn btn-primary"
+          (click)="verEntradas(evento.id)">
+          Ver Entradas
+        </button>
+        <button type="button" class="btn btn-primary" (click)="eliminarEvento(evento.id)" >Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">{{action == 'crear' ? 'Crear' : 'Editar' }} Evento</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-body row g-3">
+          <div class="col-12">
+            <label  class="form-label">Nombre del Evento</label>
+            <input type="username" class="form-control" name="nombre_evento"  [(ngModel)]="nombre_evento" >
+          </div>
+          <div class="col-12">
+            <label for="inputFecha" class="form-label">Fecha del Evento</label>
+            <input
+              id="inputFecha"
+              class="form-control"
+              name="fecha_evento"
+              type="date"
+              [(ngModel)]="fecha_evento">
+          </div>
+
+
+          <div class="col-12 col-lg-12">
+            <div class="d-grid">
+
+
+
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="crearEvento()" data-bs-dismiss="modal">Guardar</button>
+
+      </div>
+    </div>
+  </div>
+</div>

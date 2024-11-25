@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
-  selector: 'app-main-component',
+  selector: 'app-eventos',
   standalone: false,
-  templateUrl: './main-component.component.html',
-  styleUrl: './main-component.component.scss',
+
+  templateUrl: './eventos.component.html',
+  styleUrl: './eventos.component.scss'
 })
-export class MainComponentComponent{
+export class EventosComponent {
   action:any
   eventos:any[] = []
   fecha_evento:any

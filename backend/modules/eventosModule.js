@@ -1,4 +1,5 @@
 const database = require('../db/database');
+const QRCode = require('qrcode');
 
 const getAllEventos = async (req, res) => {
     try {
@@ -12,20 +13,56 @@ const getAllEventos = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
-
 const getOneEvento = async (req, res) => {
-    try {
-        const { query, release } = await database.connection();
-        const { id } = req.params;
-        const { id_usuario } = req.TOKEN_DATA;
+  try {
+    const { query, release } = await database.connection();
+    const { id } = req.params;
 
-        const Evento = await query(`SELECT * FROM eventos WHERE id = ${id} AND id_usuario = ${id_usuario}`);
-        await release();
-        res.json(Evento);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    // Consulta a la base de datos para obtener el evento y las entradas (QRs)
+    const evento = await query(`
+      SELECT 
+        e.*,
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id', q.id,
+            'uuid', q.uuid,
+            'usado', q.usado
+          )
+        ) AS entradas
+      FROM eventos e
+      LEFT JOIN entradas q ON e.id = q.id_evento
+      WHERE e.id = ${id} AND e.id_usuario = ${req.TOKEN_DATA.id}
+      GROUP BY e.id
+    `);
+
+    // Si no se encuentra el evento, devolver error 404
+    if (!evento || evento.length === 0) {
+      return res.status(404).json({ error: 'Evento no encontrado o no autorizado' });
     }
-}
+
+    
+    const entradas = evento[0].entradas;
+
+    
+    const entradasConQr = await Promise.all(entradas.map(async (entrada) => {
+      
+      const qrCodeBase64 = await QRCode.toDataURL(`http://localhost:8080/api/v1/validation/${entrada.uuid}`); 
+      return {
+        ...entrada,
+        qrCode: qrCodeBase64
+      };
+    }));
+
+    
+    await release();
+    res.json({
+      evento: evento[0],
+      entradas: entradasConQr
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const createEvento = async (req, res) => {
     try {

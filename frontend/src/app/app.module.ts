@@ -10,12 +10,16 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AuthInterceptor } from './http.interceptor';
+import { EntradasComponent } from './components/entradas/entradas.component';
+import { EventosComponent } from './components/eventos/eventos.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    MainComponentComponent
+    MainComponentComponent,
+    EntradasComponent,
+    EventosComponent
   ],
   imports: [
     BrowserModule,
