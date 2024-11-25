@@ -1,43 +1,41 @@
 
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
 
-<div class="row g-0 m-0">
-  <div class="col-xl-3 col-lg-12">
-    <div class="login-cover-wrapper">
-      <div class="card shadow-none">
-        <div class="card-body">
-          <div class="text-center ">
-            <h4>Inicio de Sesion</h4>
-            <p>Inicie sesion usando sus credenciales.</p>
-          </div>
-          <form class="form-body row g-3">
-            <div class="col-12">
-              <label  class="form-label">Email</label>
-              <input type="username" class="form-control" name="username"  [(ngModel)]="username" >
-            </div>
-            <div class="col-12">
-              <label for="inputPassword" class="form-label">Contraseña</label>
-              <input type="password" class="form-control"name="password"   [(ngModel)]="password" >
-            </div>
+            <div class="mb-md-5 mt-md-4 pb-5">
 
+              <h2 class="fw-bold mb-2 text-uppercase">Iniciar Sesion</h2>
+              <p class="text-white-50 mb-5">Inicie sesión usando sus credenciales.</p>
 
-            <div class="col-12 col-lg-12">
-              <div class="d-grid">
-                <button type="button" class="btn btn-primary" (click)="login()">Iniciar Sesion</button>
-
+              <div data-mdb-input-init class="form-outline form-white mb-4">
+                <label class="form-label" for="typeEmailX">Usuario</label>
+                <input type="email" id="typeEmailX" class="form-control form-control-lg" [(ngModel)]="username" />
 
               </div>
 
+              <div data-mdb-input-init class="form-outline form-white mb-4">
+                <label class="form-label" for="typePasswordX">Constraseña</label>
+                <input type="password" id="typePasswordX" class="form-control form-control-lg" [(ngModel)]="password" />
+
+              </div>
+
+
+
+              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit" (click)="login()">Inicia Sesion</button>
+
+
+
             </div>
 
-          </form>
+
+
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-xl-6 col-lg-12">
-    <div class="position-fixed top-0 h-100 d-xl-block d-none login-cover-img">
-    </div>
-  </div>
-</div>
-<!--end row-->
-
+</section>

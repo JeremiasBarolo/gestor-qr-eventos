@@ -27,9 +27,13 @@ export class EntradasComponent {
 
 
   ngOnInit(){
+   this.cargarDatos()
+  }
+
+  cargarDatos(){
     this.apiService.getEvento(this.id).subscribe((res)=>{
       if(res){
-        this.evento = res[0]
+        this.evento = res.evento
         this.entradas = res.entradas
         console.log(this.entradas);
 
@@ -37,15 +41,16 @@ export class EntradasComponent {
     })
   }
 
-  generarEntradas(e:any){
-    e.preventDefault();
-    if(this.cantidad_agregar == 0){
-      return
+  generarEntradas(){
+
+    if(this.cantidad_agregar <= 0){
+      alert('a')
+    }else{
+      this.apiService.createQR({cantidad: this.cantidad_agregar, id_evento: this.id}).subscribe((res)=>{
+        this.cargarDatos()
+      })
     }
 
-  this.apiService.createQR({cantidad: this.cantidad_agregar, id_evento: this.id}).subscribe((res)=>{
-    console.log(res)
-  })
 
   }
 

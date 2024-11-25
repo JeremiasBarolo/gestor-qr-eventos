@@ -1,17 +1,48 @@
-<h1>{{evento?.nombre_evento}}</h1>
+<h1 class="text-center mb-4">{{evento?.nombre_evento}}</h1>
 
-<form (submit)="generarEntradas($event)">
-  <input type="number" name="cantidad_agregar" [(ngModel)]="cantidad_agregar">
-  <button>Agregar entradas</button>
-</form>
+<button class="btn btn-primary rounded-pill px-3" type="button" data-bs-toggle="modal" data-bs-target="#generarModal" >Generar Entradas</button>
 
 
-<div *ngFor="let entrada of entradas">
-  <ng-container *ngIf="entrada.uuid">
+<div class="card-container">
+  <div *ngFor="let entrada of entradas">
+    <ng-container *ngIf="entrada.uuid">
+      <div class="card">
+        <div class="card-border-top"></div>
+        <div class="img">
+          <qrcode
+            [qrdata]="'http://192.168.0.11:8080/api/v1/validate/'+entrada.uuid"
+            [width]="90"
+            [errorCorrectionLevel]="'M'"></qrcode>
+        </div>
+        <span> {{entrada.usado === 1 ? 'Canjeada' : 'Valida'}}</span>
+        <p class="job">{{entrada.uuid.slice(0,11)}}</p>
+        <button class="mb-2">Generar PDF</button>
+      </div>
+    </ng-container>
+  </div>
+</div>
 
-    <h5>Entrada ID: {{ entrada.id }}</h5>
-    <p> Estado {{entrada.usado === 1 ? 'Invalida' : 'Valida'}}</p>
-    <qrcode [qrdata]="'http://192.168.0.11:8080/api/v1/validate/'+entrada.uuid" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
-  </ng-container>
+<!-- Modal -->
+<div class="modal fade" id="generarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Generar Entradas</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-body row g-3">
+          <div class="col-12">
+            <label  class="form-label">Cantidad:</label>
+            <input type="number" class="form-control" name="cantidad_agregar"  [(ngModel)]="cantidad_agregar" >
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="generarEntradas()" data-bs-dismiss="modal">Guardar</button>
 
+      </div>
+    </div>
+  </div>
 </div>
