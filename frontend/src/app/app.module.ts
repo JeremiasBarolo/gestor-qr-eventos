@@ -12,6 +12,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { AuthInterceptor } from './http.interceptor';
 import { EntradasComponent } from './components/entradas/entradas.component';
 import { EventosComponent } from './components/eventos/eventos.component';
+import { QRCodeComponent } from 'angularx-qrcode';
 
 @NgModule({
   declarations: [
@@ -19,13 +20,15 @@ import { EventosComponent } from './components/eventos/eventos.component';
     LoginComponent,
     MainComponentComponent,
     EntradasComponent,
-    EventosComponent
+    EventosComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    QRCodeComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
