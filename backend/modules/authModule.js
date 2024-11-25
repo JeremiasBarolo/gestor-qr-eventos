@@ -33,11 +33,10 @@ const createUser = async (req, res) => {
         const { query, release } = await database.connection();
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-        await query(`INSERT INTO User (username, password) 
+        await query(`INSERT INTO users (username, password) 
         VALUES (
         '${req.body.username}', 
-        '${hashedPassword}',
-        
+        '${hashedPassword}'
         )`
         );
 
@@ -72,7 +71,7 @@ const updateUser = async (req, res) => {
         }
 
         await query(`
-            UPDATE User SET 
+            UPDATE users SET 
                 email = '${email}',
                 password = '${password}',
                 username = '${username}'
@@ -102,10 +101,10 @@ const deleteUser = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { query, release } = await database.connection();
-        const { email, password } = req.body;
+        const { username, password } = req.body;
 
         // Consulta al usuario en la base de datos
-        const result = await query(`SELECT * FROM users WHERE email = '${email}'`);
+        const result = await query(`SELECT * FROM users WHERE username = '${username}'`);
 
         if (result.length === 0) {
             return res.status(400).json({ error: 'Usuario no encontrado' });
@@ -120,7 +119,7 @@ const login = async (req, res) => {
 
         // Generar el token JWT
         const token = jwt.sign(
-            { id_usuario: usuario.id_usuario, email: usuario.email, username: usuario.username }, 
+            { id: usuario.id, email: usuario.email, username: usuario.username }, 
             fs.readFileSync('./key', 'utf8').trim()
         );
 

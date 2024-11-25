@@ -16,6 +16,8 @@ const validateToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, fs.readFileSync('./key', 'utf8').trim());
+        console.log(decoded);
+        
         req.TOKEN_DATA = decoded; 
         next();
     } catch (err) {

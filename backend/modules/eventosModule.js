@@ -3,9 +3,9 @@ const database = require('../db/database');
 const getAllEventos = async (req, res) => {
     try {
         const { query, release } = await database.connection();
-        const { id_usuario } = req.TOKEN_DATA;
+        const { id } = req.TOKEN_DATA;
 
-        const Eventos = await query(`SELECT * FROM eventos  WHERE id_usuario = ${id_usuario}`);
+        const Eventos = await query(`SELECT * FROM eventos  WHERE id_usuario = ${id}`);
         await release();
         res.json(Eventos);
     } catch (error) {
@@ -30,14 +30,14 @@ const getOneEvento = async (req, res) => {
 const createEvento = async (req, res) => {
     try {
         const { query, release } = await database.connection();
-        const { id_usuario } = req.TOKEN_DATA;
+        const { id } = req.TOKEN_DATA;
 
 
         await query(`INSERT INTO eventos (nombre_evento, id_usuario, fecha_evento) 
         VALUES (
         '${req.body.nombre_evento}', 
-        '${id_usuario}',
-        '${req.body.fecha_evento}',
+        '${id}',
+        '${req.body.fecha_evento}'
         )`
         );
         await release();
@@ -51,9 +51,9 @@ const updateEvento = async (req, res) => {
     try {
         const { query, release } = await database.connection();
         const { id } = req.params;
-        const { id_usuario } = req.TOKEN_DATA;
         
-        const currentEvento = await query(`SELECT * FROM eventos WHERE id = ${id} AND id_usuario = ${id_usuario}`);
+        
+        const currentEvento = await query(`SELECT * FROM eventos WHERE id = ${id} AND id_usuario = ${req.TOKEN_DATA.id}`);
         if (currentEvento.length === 0) {
             await release();
             return res.status(404).json({ error: 'Evento no encontrado' });
