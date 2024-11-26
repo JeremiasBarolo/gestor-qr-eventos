@@ -58,71 +58,84 @@ export class EntradasComponent {
   }
 
 
-  async exportAllToPdf() {
-    const margin = 10; // Margen del PDF
-    const pageWidth = 210; // Ancho A4 en mm (JS PDF usa mm)
-    const qrSize = 70; // Tamaño del QR reducido a 70px
-    const titleFontSize = 20; // Reducir tamaño de fuente del título
-    const descFontSize = 14; // Reducir tamaño de fuente de la descripción
-    const contentFontSize = 12; // Reducir tamaño de fuente del contenido
+  async exportAllToPdf(evento: any) {
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const cardWidth = 180;
+    const cardHeight = 85;
+    const marginX = (pageWidth - cardWidth) / 2;
+    const marginY = 20;
 
-    for (const entrada of this.evento.entradas) {
-      if (!entrada.uuid) {
-        continue;
-      }
+    for (const entrada of evento.entradas) {
+      if (!entrada.uuid) continue;
 
-      // Generar QR como base64 usando QRCode
       const qrDataUrl = await QRCode.toDataURL(
         `http://192.168.0.11:8080/api/v1/validate/${entrada.uuid}`,
         { width: 400, margin: 2 }
       );
 
-      // Crear PDF
       const pdf = new jsPDF();
+      
+      // Background gradient
+      const gradient = pdf.setFillColor(51, 51, 153);
+      pdf.rect(marginX, marginY, cardWidth, cardHeight, 'F');
 
-      // Título del Evento
-      const title = this.evento?.nombre_evento || 'Evento';
+      // Ticket border with rounded corners
+      pdf.setDrawColor(255, 255, 255);
+      pdf.setLineWidth(0.5);
+      pdf.roundedRect(marginX, marginY, cardWidth, cardHeight, 5, 5, 'S');
+
+      // Decorative elements
+      pdf.setDrawColor(255, 255, 255);
+      pdf.setLineDashPattern([2, 2], 0);
+      pdf.line(marginX + cardWidth - 45, marginY, marginX + cardWidth - 45, marginY + cardHeight);
+
+      // Header
+      pdf.setTextColor(255, 255, 255);
       pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(titleFontSize);
-      pdf.text(title, pageWidth / 2, margin + titleFontSize, { align: 'center' });
+      pdf.setFontSize(20);
+      pdf.text(evento.nombre_evento || 'Evento', marginX + 10, marginY + 15);
 
-      // Descripción del Evento
-      const description = 'Aqui esta tu entrada! Que disfrutes del evento!';
+      // Event name
+      // pdf.setFontSize(16);
+      // pdf.text(
+      //   evento.nombre_evento || 'Evento',
+      //   marginX + 10,
+      //   marginY + 30
+      // );
+
+      // Left side information
       pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(descFontSize);
-      pdf.text(description, pageWidth / 2, margin + titleFontSize + 8, { align: 'center' });
+      pdf.setFontSize(12);
+      
+      const fecha = evento?.fecha_evento ? new Date(evento.fecha_evento) : null;
+      const formattedDate = fecha
+        ? `${this.pad(fecha.getDate())}/${this.pad(fecha.getMonth() + 1)}/${fecha.getFullYear()}`
+        : 'TBA';
 
-      // Posición del QR
-      const qrYPosition = margin + titleFontSize + descFontSize + 15; // Ajustar espacio
-      pdf.addImage(qrDataUrl, 'PNG', (pageWidth - qrSize) / 2, qrYPosition, qrSize, qrSize);
+      pdf.text(`Date: ${formattedDate}`, marginX + 10, marginY + 45);
+      pdf.text(`Status: ${entrada.usado === 1 ? 'USED' : 'VALID'}`, marginX + 10, marginY + 55);
+      
+      // Small UUID
+      pdf.setFontSize(8);
+      pdf.text(`ID: ${entrada.uuid}`, marginX + 10, marginY + 75);
 
-      // Detalles de la entrada (UUID y Estado)
-      const textYPosition = qrYPosition + qrSize + 8; // Reducir espacio entre QR y texto
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(contentFontSize);
-      pdf.text(`UUID: ${entrada.uuid}`, pageWidth / 2, textYPosition, { align: 'center' });
-      pdf.text(
-        `Estado: ${entrada.usado === 1 ? 'Invalida' : 'Valida'}`,
-        pageWidth / 2,
-        textYPosition + 5,
-        { align: 'center' }
-      );
+      // Right side - QR Code
+      const qrSize = 35;
+      const qrX = marginX + cardWidth - 40;
+      const qrY = marginY + 25;
+      pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, 30, 30);
 
-      // Formatear la fecha
-      const fecha = this.evento?.fecha_evento ? new Date(this.evento.fecha_evento) : null;
-      const formattedDate = fecha ? `${this.pad(fecha.getDate())}/${this.pad(fecha.getMonth() + 1)}/${fecha.getFullYear().toString().slice(-2)}` : 'Fecha no disponible';
+      // Decorative elements
+      pdf.setDrawColor(255, 255, 255);
+      pdf.setLineDashPattern([1, 1], 0);
+      pdf.circle(marginX + cardWidth - 25, marginY + 70, 2, 'S');
 
-      // Agregar la fecha formateada al PDF
-      pdf.text(`Fecha: ${formattedDate}`, pageWidth / 2, textYPosition + 10, { align: 'center' });
-
-      // Guardar PDF con un nombre único basado en el UUID
-      pdf.save(`codigo-qr-${this.evento.nombre_evento}-${entrada.uuid.slice(0,5)}.pdf`);
+      pdf.save(`gamepass-${evento.nombre_evento}-${entrada.uuid.slice(0, 5)}.pdf`);
     }
   }
 
-  // Método auxiliar para asegurarse de que el día y mes sean de dos dígitos
-  pad(num: number) {
+  private pad(num: number): string {
     return num < 10 ? `0${num}` : num.toString();
   }
-
 }
