@@ -1,12 +1,45 @@
-<h1>{{evento?.nombre_evento}}</h1>
-
-<form (submit)="generarEntradas($event)">
-  <input type="number" name="cantidad_agregar" [(ngModel)]="cantidad_agregar">
-  <button>Agregar entradas</button>
-</form>
-
-
-<div *ngFor="let entrada of entradas">
-  <h5>Entrada ID: {{ entrada.id }}</h5>
-  <img [src]="entrada?.qrCode" alt="Código QR" style="width: 150px; height: 150px;">
+<div class="container py-4">
+  <!-- Título del Evento -->
+  <h1 class="text-center mb-4">{{evento?.nombre_evento}}</h1>
+  
+  <!-- Formulario Generar Entradas -->
+  <div class="d-flex justify-content-center mb-4">
+    <form class="d-flex align-items-center gap-2" (submit)="generarEntradas($event)">
+      <input
+        type="number"
+        class="form-control rounded-pill"
+        placeholder="Cantidad a agregar"
+        [(ngModel)]="cantidad_agregar"
+        name="cantidad_agregar"
+        required
+      />
+      <button
+          type="submit"
+          class="btn btn-primary rounded-pill px-3"
+          style="white-space: nowrap; min-width: 150px;"
+        >
+          Generar entradas
+      </button>
+    </form>
+  </div>
+  
+  <!-- Tarjetas de Entradas -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+    <div class="col" *ngFor="let entrada of entradas">
+      <div class="card text-center h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Entrada ID: {{ entrada.id }}</h5>
+          <img
+            [src]="entrada?.qrCode"
+            alt="Código QR"
+            class="img-fluid my-3"
+            style="width: 150px; height: 150px;"
+          />
+          <button class="btn btn-secondary rounded-pill px-3">
+            Generar PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
