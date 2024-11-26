@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import { AlertComponent } from '../alert/alert.component';
 import JSZip from 'jszip'; // Asegúrate de tener instalada esta librería
 import * as FileSaver from 'file-saver';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class EntradasComponent {
   constructor(
     private route: ActivatedRoute,
     private apiService:ApiService,
-    private router:Router
+    public authService: AuthService
   ){
     this.route.params.subscribe(params => {
       this.id = params['id'] || null;
@@ -162,6 +163,7 @@ export class EntradasComponent {
     })
 
   }
+
 
 }
 
