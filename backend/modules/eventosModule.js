@@ -42,22 +42,11 @@ const getOneEvento = async (req, res) => {
 
     
     const entradas = evento[0].entradas;
-
-    
-    const entradasConQr = await Promise.all(entradas.map(async (entrada) => {
-      
-      const qrCodeBase64 = await QRCode.toDataURL(`http://localhost:8080/api/v1/validation/${entrada.uuid}`); 
-      return {
-        ...entrada,
-        qrCode: qrCodeBase64
-      };
-    }));
-
-    
+  
     await release();
     res.json({
       evento: evento[0],
-      entradas: entradasConQr
+      entradas: entradas
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

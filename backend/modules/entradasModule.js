@@ -1,5 +1,6 @@
 const database = require('../db/database');
 const { v4: uuidv4 } = require('uuid');
+const path = require('path')
 
 
 const leerQR = async (req, res) => {
@@ -29,17 +30,17 @@ const leerQR = async (req, res) => {
           if (entrada[0].usado == 0) {
               
               await query(`UPDATE entradas SET usado = 1 WHERE uuid = '${uuid}'`);
-              res.json({ message: "Entrada validada y marcada como utilizada." });
+              res.sendFile(path.join(__dirname, '../templates/ok.html'));
 
           } else {
               
-              res.status(400).json({ message: "Esta entrada ya ha sido utilizada." });
+            res.sendFile(path.join(__dirname, '../templates/error.html'));
           }
 
 
       } else {
           
-          res.status(400).json({ message: "La fecha del evento no coincide con la fecha actual." });
+        res.sendFile(path.join(__dirname, '../templates/fecha.html'));
       }
 
 
@@ -77,7 +78,7 @@ const generarEntradas = async (req, res) => {
   
       
       for (let i = 0; i < cantidad; i++) {
-        const uuid = uuidv4().replace(/-/g, '').slice(0, 11); 
+        const uuid = uuidv4(); 
         entradas.push([uuid, 0, id_evento]);
       }
   

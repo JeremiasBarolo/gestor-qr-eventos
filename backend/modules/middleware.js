@@ -4,7 +4,7 @@ const fs = require("fs")
 // Middleware para validar el token
 const validateToken = (req, res, next) => {
     // Excluir el endpoint de login
-    if (req.path === '/login') return next();
+    if (req.path === '/login' || req.url.includes('/api/v1/validate/')) return next();
 
     const authHeader = req.headers.authorization;
 
