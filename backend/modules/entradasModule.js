@@ -151,10 +151,10 @@ const deleteQR = async (req, res) => {
     try {
         const { query, release } = await database.connection();
         const { id } = req.params;
-        await query(`DELETE FROM QRs WHERE id = ${id}`);
+        await query(`DELETE FROM entradas WHERE id = ${id}`);
         await release();
         
-        res.json('QR Eliminado');
+        res.json('Entrada Eliminada');
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

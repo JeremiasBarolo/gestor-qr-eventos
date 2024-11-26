@@ -46,6 +46,8 @@ export class EntradasComponent {
 
         if(this.entradas[0].uuid){
           this.mostrarCantidad = true
+        }else{
+          this.mostrarCantidad = false
         }
 
 
@@ -151,6 +153,14 @@ export class EntradasComponent {
   // Método auxiliar para formatear la fecha con ceros a la izquierda
   pad(num: number): string {
     return num < 10 ? `0${num}` : num.toString();
+  }
+
+  eliminarEntrada(entrada:any){
+    this.apiService.deleteQR(entrada.id).subscribe((res)=>{
+      this.alertComponent.triggerAlert(`Se elimino la entrada para el evento: ${this.evento.nombre_evento}`, 'success');
+      this.cargarDatos()
+    })
+
   }
 
 }

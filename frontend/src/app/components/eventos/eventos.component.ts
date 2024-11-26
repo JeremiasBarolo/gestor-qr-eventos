@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'app-eventos',
@@ -10,13 +11,13 @@ import { ApiService } from '../../services/api.service';
   styleUrl: './eventos.component.scss'
 })
 export class EventosComponent {
-  action:any
+  action:string = 'crear'
   eventos:any[] = []
   fecha_evento:any
   nombre_evento:any
   id_evento:any
   searchTerm: string = '';
-  eventosFiltrados: any[] = []; 
+  eventosFiltrados: any[] = [];
 
 
   constructor(
@@ -25,6 +26,8 @@ export class EventosComponent {
   ){
 
   }
+
+  @ViewChild(AlertComponent) alertComponent!: AlertComponent;
 
   ngOnInit(){
     this.cargarDatos()
@@ -49,16 +52,21 @@ export class EventosComponent {
     }
   }
 
-  crearEvento() {
+  crearEvento(evento?:any) {
     let data = {
       nombre_evento: this.nombre_evento,
       fecha_evento: new Date(this.fecha_evento),
     };
+
     if (this.action == 'crear') {
       this.apiService.createEventos(data).subscribe((res) => {
         if (res) {
           this.eventos = [];
           this.cargarDatos();
+          this.modalClose()
+          this.alertComponent.triggerAlert(`Se creo exitosamente el evento`, 'success');
+
+
         }
       });
     } else {
@@ -66,28 +74,39 @@ export class EventosComponent {
         if (res) {
           this.eventos = [];
           this.cargarDatos();
+          this.modalClose()
+
+          this.alertComponent.triggerAlert(`Se actualizo exitosamente el evento`, 'success');
         }
       });
     }
   }
 
   editar(data: any) {
+    this.action = 'editar'
     this.nombre_evento = data.nombre_evento;
     this.id_evento = data.id;
     const fecha = new Date(data.fecha_evento);
     this.fecha_evento = fecha.toISOString().split('T')[0];
   }
 
-  eliminarEvento(id: any) {
+  eliminarEvento(id: any, evento:any) {
     this.apiService.deleteEventos(id).subscribe((res) => {
       if (res) {
         this.eventos = [];
         this.cargarDatos();
+        this.alertComponent.triggerAlert(`Se elimino exitosamente el evento: ${evento.nombre_evento}`, 'success');
       }
     });
   }
 
   verEntradas(id: number) {
     this.router.navigate([`ver-entradas`, id]);
+  }
+
+  modalClose(){
+    this.nombre_evento = ''
+    this.fecha_evento = ''
+    this.action = 'crear'
   }
 }

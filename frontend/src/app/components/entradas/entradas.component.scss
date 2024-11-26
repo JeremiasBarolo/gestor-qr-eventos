@@ -2,20 +2,26 @@
 .container {
     max-width: 1200px;
   }
-  
+
   form .form-control {
     max-width: 250px;
   }
-  
+
   .card {
-    max-width: 200px;
+    max-width: 210px;
+    max-height: 290px;
     margin: auto;
   }
-  
+
   .card img {
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 5px;
   }
 
+
+  .badge{
+    width: 75%;
+    height: 27px;
+  }
 

@@ -3,7 +3,7 @@
   <div class="flex mb-4">
     <button class="btn btn-primary rounded-pill px-3" type="button" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="action = 'crear'" >Crear Evento</button>
   </div>
-
+  <app-alert></app-alert>
   <!-- Card -->
   <div class="row">
     <div class="col-md-4" *ngFor="let evento of eventosFiltrados">
@@ -39,7 +39,7 @@
           <button
             type="button"
             class="btn btn-danger d-flex align-items-center gap-2"
-            (click)="eliminarEvento(evento.id)">
+            (click)="eliminarEvento(evento.id, evento)">
             <i class="bi bi-trash"></i>
           </button>
         </div>
@@ -51,7 +51,7 @@
 <!-- Button trigger modal -->
 
 <!-- Modal -->
-<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" (hidden.bs.modal)="modalClose()">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -62,7 +62,7 @@
         <form class="form-body row g-3">
           <div class="col-12">
             <label  class="form-label">Nombre del Evento</label>
-            <input type="username" class="form-control" name="nombre_evento" maxlength="30"  [(ngModel)]="nombre_evento" >
+            <input type="username" class="form-control" name="nombre_evento" maxlength="25"  [(ngModel)]="nombre_evento" >
           </div>
           <div class="col-12">
             <label for="inputFecha" class="form-label">Fecha del Evento</label>

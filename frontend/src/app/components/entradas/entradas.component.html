@@ -2,10 +2,12 @@
 <div class="container py-4">
   <!-- Título del Evento -->
   <h1 class="text-center mb-4">{{evento?.nombre_evento}}</h1>
-  <button class="btn btn-success rounded-pill px-3" (click)="exportAllToPdf2(evento)">Exportar en Entradas</button>
+
 
   <!-- Formulario Generar Entradas -->
   <div class="d-flex justify-content-center mb-4">
+    <button *ngIf="mostrarCantidad" class="btn btn-success rounded-pill px-3 d-flex align-items-center gap-2" style="margin-right: 6px;" (click)="exportAllToPdf2(evento)">Exportar en Entradas</button>
+
     <form class="d-flex align-items-center gap-2" (submit)="generarEntradas()">
       <input
         type="number"
@@ -32,7 +34,7 @@
 
   <h4 class="text-center m-5" *ngIf="mostrarCantidad"> Cantidad de entradas: {{entradas?.length }}</h4>
   <!-- Tarjetas de Entradas -->
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3" style="height: calc(100vh - 264px); overflow: auto;">
     <div class="col" *ngFor="let entrada of entradas">
 
       <ng-container *ngIf="entrada.uuid">
@@ -40,8 +42,13 @@
           <div class="card-body">
             <h5 class="card-title">Entrada ID: {{ entrada.id }}</h5>
             <qrcode  [qrdata]="'http://192.168.0.11:8080/api/v1/validate/' + entrada.uuid"  class="img-fluid my-3" style="width: 150px; height: 150px;" ></qrcode>
-            <button class="btn btn-secondary rounded-pill px-3" >
-              Generar PDF
+            <span class="badge" [ngClass]="entrada.usado === 0 ? 'bg-success' : 'bg-danger'">
+              {{ entrada.usado === 0 ? 'Válida' : 'Inválida' }}
+            </span>
+
+            <!-- Botón de eliminar con icono de basura -->
+            <button class="btn btn-sm rounded-pill btn-danger ms-2" (click)="eliminarEntrada(entrada)">
+              <i class="bi bi-trash"></i>
             </button>
           </div>
         </div>
