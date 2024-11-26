@@ -1,13 +1,16 @@
 <div class="container mt-5">
-  <h1 class="text-center mb-4">¡Bienvenido a Mis Eventos!</h1>
-  <button class="btn btn-primary rounded-pill px-3" type="button" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="action = 'crear'" >Crear Evento</button>
+  <h1 class="text-center mb-4">Mis Eventos</h1>
+  <div class="flex mb-4">
+    <button class="btn btn-primary rounded-pill px-3" type="button" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="action = 'crear'" >Crear Evento</button>
+  </div>
 
+  <!-- Card -->
   <div class="row">
-    <div class="col-md-4" *ngFor="let evento of eventos">
+    <div class="col-md-4" *ngFor="let evento of eventosFiltrados">
       <div class="card mb-3 shadow-sm">
-        <div class="card-header text-center">
+        <h4 class="card-title text-center mt-4">
           {{ evento.nombre_evento }}
-        </div>
+        </h4>
         <div class="card-body">
 
 
@@ -16,23 +19,35 @@
           </p>
         </div>
 
-        <div class="card-footer text-body-secondary">
-          <button type="button" class="btn btn-secondary mr-3" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="editar(evento)">
-              Editar Evento
+        <div class="card-footer text-body-secondary d-flex justify-content-center gap-2">
+          <button
+            type="button"
+            class="btn btn-secondary d-flex align-items-center gap-2"
+            (click)="verEntradas(evento.id)">
+             Ver
           </button>
           <button
-          type="button"
-          class="btn btn-primary"
-          (click)="verEntradas(evento.id)">
-          Ver Entradas
-        </button>
-        <button type="button" class="btn btn-primary" (click)="eliminarEvento(evento.id)" >Eliminar</button>
+            type="button"
+            class="btn btn-primary d-flex align-items-center gap-2"
+            data-bs-dismiss="modal"
+            data-bs-toggle="modal"
+            data-bs-target="#crearModal"
+            (click)="editar(evento)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          
+          <button
+            type="button"
+            class="btn btn-danger d-flex align-items-center gap-2"
+            (click)="eliminarEvento(evento.id)">
+            <i class="bi bi-trash"></i>
+          </button>
         </div>
+        
       </div>
     </div>
   </div>
 
-</div>
 <!-- Button trigger modal -->
 
 <!-- Modal -->
@@ -62,9 +77,6 @@
 
           <div class="col-12 col-lg-12">
             <div class="d-grid">
-
-
-
             </div>
 
           </div>
