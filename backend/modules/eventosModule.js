@@ -35,6 +35,8 @@ const getOneEvento = async (req, res) => {
       GROUP BY e.id
     `);
 
+   
+
     // Si no se encuentra el evento, devolver error 404
     if (!evento || evento.length === 0) {
       return res.status(404).json({ error: 'Evento no encontrado o no autorizado' });
@@ -45,7 +47,8 @@ const getOneEvento = async (req, res) => {
   
     await release();
     res.json({
-      evento: evento[0]
+      evento,
+      entradas: evento.entradas
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

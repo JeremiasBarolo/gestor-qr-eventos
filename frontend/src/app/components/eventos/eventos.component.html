@@ -35,7 +35,7 @@
             (click)="editar(evento)">
             <i class="bi bi-pencil"></i>
           </button>
-          
+
           <button
             type="button"
             class="btn btn-danger d-flex align-items-center gap-2"
@@ -43,7 +43,7 @@
             <i class="bi bi-trash"></i>
           </button>
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@
         <form class="form-body row g-3">
           <div class="col-12">
             <label  class="form-label">Nombre del Evento</label>
-            <input type="username" class="form-control" name="nombre_evento"  [(ngModel)]="nombre_evento" >
+            <input type="username" class="form-control" name="nombre_evento" maxlength="30"  [(ngModel)]="nombre_evento" >
           </div>
           <div class="col-12">
             <label for="inputFecha" class="form-label">Fecha del Evento</label>

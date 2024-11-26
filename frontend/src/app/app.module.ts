@@ -32,6 +32,8 @@ import { AlertComponent } from './components/alert/alert.component';
     FormsModule,
     QRCodeComponent
   ],
+
+  exports: [AlertComponent],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     provideAnimationsAsync()

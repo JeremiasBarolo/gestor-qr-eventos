@@ -2,9 +2,8 @@
 <div class="container py-4">
   <!-- Título del Evento -->
   <h1 class="text-center mb-4">{{evento?.nombre_evento}}</h1>
-  <button (click)="exportAllToPdf(evento)">duo
+  <button class="btn btn-success rounded-pill px-3" (click)="exportAllToPdf2(evento)">Exportar en Entradas</button>
 
-  </button>
   <!-- Formulario Generar Entradas -->
   <div class="d-flex justify-content-center mb-4">
     <form class="d-flex align-items-center gap-2" (submit)="generarEntradas()">
@@ -25,49 +24,30 @@
       </button>
     </form>
   </div>
+  <app-alert></app-alert>
 
   <!-- class="img-fluid my-3" -->
   <!-- style="width: 150px; height: 150px;" -->
 
+
+  <h4 class="text-center m-5" *ngIf="mostrarCantidad"> Cantidad de entradas: {{entradas?.length }}</h4>
   <!-- Tarjetas de Entradas -->
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
-    <div class="col" *ngFor="let entrada of evento?.entradas">
-      <div class="card text-center h-100 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Entrada ID: {{ entrada.id }}</h5>
-          <qrcode  [qrdata]="'http://192.168.0.1:8080/api/v1/validate/' + entrada.uuid"  class="img-fluid my-3" style="width: 150px; height: 150px;" ></qrcode>
-          <button class="btn btn-secondary rounded-pill px-3" >
-            Generar PDF
-          </button>
+    <div class="col" *ngFor="let entrada of entradas">
+
+      <ng-container *ngIf="entrada.uuid">
+        <div class="card text-center h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Entrada ID: {{ entrada.id }}</h5>
+            <qrcode  [qrdata]="'http://192.168.0.11:8080/api/v1/validate/' + entrada.uuid"  class="img-fluid my-3" style="width: 150px; height: 150px;" ></qrcode>
+            <button class="btn btn-secondary rounded-pill px-3" >
+              Generar PDF
+            </button>
+          </div>
         </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="generarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Generar Entradas</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form class="form-body row g-3">
-          <div class="col-12">
-            <label  class="form-label">Cantidad:</label>
-            <input type="number" class="form-control" name="cantidad_agregar"  [(ngModel)]="cantidad_agregar" >
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="generarEntradas()" data-bs-dismiss="modal">Guardar</button>
-
-
-      </div>
+      </ng-container>
     </div>
-  </div>
-</div>
-
 
 
 

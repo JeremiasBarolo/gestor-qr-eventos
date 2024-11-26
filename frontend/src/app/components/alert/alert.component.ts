@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-alert',
@@ -7,9 +7,11 @@ import { Component } from '@angular/core';
   standalone: false
 })
 export class AlertComponent {
-  showAlert: boolean = false; // Controla si la alerta está visible
-  alertMessage: string = ''; // Mensaje de la alerta
-  alertType: string = 'success'; // Tipo de alerta ('success', 'danger', 'warning', 'info')
+  showAlert: boolean = false;
+  alertMessage: string = '';
+  alertType: string = 'success';
+
+  @Output() alertClosed = new EventEmitter<void>();
 
   constructor() {}
 
@@ -19,13 +21,13 @@ export class AlertComponent {
     this.alertType = type;
     this.showAlert = true;
 
-    // Opcional: Ocultar la alerta automáticamente después de 5 segundos
+
     setTimeout(() => {
       this.showAlert = false;
     }, 5000);
   }
 
-  // Método para cerrar la alerta manualmente
+
   closeAlert() {
     this.showAlert = false;
   }

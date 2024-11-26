@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
-import jsPDF from 'jspdf';
 import QRCode from 'qrcode';
+import jsPDF from 'jspdf';
+import { AlertComponent } from '../alert/alert.component';
+import JSZip from 'jszip'; // Asegúrate de tener instalada esta librería
+import * as FileSaver from 'file-saver';
 
 
 @Component({
@@ -18,15 +21,18 @@ export class EntradasComponent {
   evento: any
   entradas:any
   cantidad_agregar = 0
+  mostrarCantidad:boolean = false
   constructor(
     private route: ActivatedRoute,
-    private apiService:ApiService
+    private apiService:ApiService,
+    private router:Router
   ){
     this.route.params.subscribe(params => {
       this.id = params['id'] || null;
     });
   }
 
+  @ViewChild(AlertComponent) alertComponent!: AlertComponent;
 
   ngOnInit(){
    this.cargarDatos()
@@ -35,9 +41,13 @@ export class EntradasComponent {
   cargarDatos(){
     this.apiService.getEvento(this.id).subscribe((res)=>{
       if(res){
-        this.evento = res.evento
-        this.entradas = res.entradas
-        console.log(this.entradas);
+        this.evento = res.evento[0]
+        this.entradas = res.evento[0].entradas
+
+        if(this.entradas[0].uuid){
+          this.mostrarCantidad = true
+        }
+
 
       }
     })
@@ -46,25 +56,24 @@ export class EntradasComponent {
   generarEntradas(){
 
     if(this.cantidad_agregar <= 0){
-
+      this.alertComponent.triggerAlert('Debe asignar una cantidad superior a 0', 'info');
     }else{
       this.apiService.createQR({cantidad: this.cantidad_agregar, id_evento: this.id}).subscribe((res)=>{
         this.evento = {}
         this.cargarDatos()
+        this.alertComponent.triggerAlert(`Se crearon ${this.cantidad_agregar} nuevas entradas`, 'success');
+        this.cantidad_agregar = 0
       })
     }
 
 
   }
 
+  async exportAllToPdf2(evento: any) {
+    const cardWidth = 180;  // Ancho de la entrada
+    const cardHeight = 85;  // Alto de la entrada
 
-  async exportAllToPdf(evento: any) {
-    const pageWidth = 210;
-    const pageHeight = 297;
-    const cardWidth = 180;
-    const cardHeight = 85;
-    const marginX = (pageWidth - cardWidth) / 2;
-    const marginY = 20;
+    const zip = new JSZip(); // Crear una nueva instancia del archivo ZIP
 
     for (const entrada of evento.entradas) {
       if (!entrada.uuid) continue;
@@ -74,68 +83,75 @@ export class EntradasComponent {
         { width: 400, margin: 2 }
       );
 
-      const pdf = new jsPDF();
-      
-      // Background gradient
-      const gradient = pdf.setFillColor(51, 51, 153);
-      pdf.rect(marginX, marginY, cardWidth, cardHeight, 'F');
+      const pdf = new jsPDF({
+        unit: 'mm',
+        orientation: 'landscape',               // Unidad en milímetros
+        format: [cardWidth, cardHeight], // Tamaño personalizado del PDF (el tamaño exacto de la entrada)
+        compress: true            // Para optimizar el tamaño del archivo PDF
+      });
 
-      // Ticket border with rounded corners
+      // Fondo de color con gradiente (ajustado al tamaño de la entrada)
+      pdf.setFillColor(51, 51, 153);
+      pdf.rect(0, 0, cardWidth, cardHeight, 'F'); // Rellenamos todo el tamaño de la entrada
+
+      // Borde del ticket con esquinas redondeadas
       pdf.setDrawColor(255, 255, 255);
       pdf.setLineWidth(0.5);
-      pdf.roundedRect(marginX, marginY, cardWidth, cardHeight, 5, 5, 'S');
+      pdf.roundedRect(0, 0, cardWidth, cardHeight, 5, 5, 'S');
 
-      // Decorative elements
+      // Elementos decorativos (linea punteada)
       pdf.setDrawColor(255, 255, 255);
       pdf.setLineDashPattern([2, 2], 0);
-      pdf.line(marginX + cardWidth - 45, marginY, marginX + cardWidth - 45, marginY + cardHeight);
+      pdf.line(cardWidth - 45, 0, cardWidth - 45, cardHeight);  // Línea vertical en la parte derecha
 
-      // Header
+      // Cabecera del ticket con nombre del evento
       pdf.setTextColor(255, 255, 255);
       pdf.setFont('helvetica', 'bold');
       pdf.setFontSize(20);
-      pdf.text(evento.nombre_evento || 'Evento', marginX + 10, marginY + 15);
+      pdf.text(evento.nombre_evento || 'Evento', 10, 15);
 
-      // Event name
-      // pdf.setFontSize(16);
-      // pdf.text(
-      //   evento.nombre_evento || 'Evento',
-      //   marginX + 10,
-      //   marginY + 30
-      // );
-
-      // Left side information
+      // Información del evento
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(12);
-      
+
+      // Fecha y estado del ticket
       const fecha = evento?.fecha_evento ? new Date(evento.fecha_evento) : null;
       const formattedDate = fecha
         ? `${this.pad(fecha.getDate())}/${this.pad(fecha.getMonth() + 1)}/${fecha.getFullYear()}`
         : 'TBA';
 
-      pdf.text(`Date: ${formattedDate}`, marginX + 10, marginY + 45);
-      pdf.text(`Status: ${entrada.usado === 1 ? 'USED' : 'VALID'}`, marginX + 10, marginY + 55);
-      
-      // Small UUID
+      pdf.text(`Fecha: ${formattedDate}`, 10, 45);
+      pdf.text(`Estado: ${entrada.usado === 1 ? 'USADA' : 'VALIDA'}`, 10, 55);
+
+      // UUID pequeño
       pdf.setFontSize(8);
-      pdf.text(`ID: ${entrada.uuid}`, marginX + 10, marginY + 75);
+      pdf.text(`ID: ${entrada.uuid}`, 10, 75);
 
-      // Right side - QR Code
-      const qrSize = 35;
-      const qrX = marginX + cardWidth - 40;
-      const qrY = marginY + 25;
-      pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, 30, 30);
+      // Parte derecha - Código QR
+      pdf.addImage(qrDataUrl, 'PNG', cardWidth - 40, 25, 30, 30);
 
-      // Decorative elements
+      // Elemento decorativo circular
       pdf.setDrawColor(255, 255, 255);
       pdf.setLineDashPattern([1, 1], 0);
-      pdf.circle(marginX + cardWidth - 25, marginY + 70, 2, 'S');
+      pdf.circle(cardWidth - 25, 70, 2, 'S');
 
-      pdf.save(`gamepass-${evento.nombre_evento}-${entrada.uuid.slice(0, 5)}.pdf`);
+      // Generar el PDF como Blob para agregarlo al ZIP
+      const pdfBlob = pdf.output('blob');
+
+      // Añadir el archivo PDF al ZIP con el nombre correspondiente
+      zip.file(`entrada_${entrada.uuid.slice(0, 5)}.pdf`, pdfBlob);
     }
+
+    // Generar el archivo ZIP y ofrecer la descarga
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      FileSaver.saveAs(content, `entrada-${evento.nombre_evento}.zip`);
+    });
   }
 
-  private pad(num: number): string {
+  // Método auxiliar para formatear la fecha con ceros a la izquierda
+  pad(num: number): string {
     return num < 10 ? `0${num}` : num.toString();
   }
+
 }
+
