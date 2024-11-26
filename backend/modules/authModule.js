@@ -102,6 +102,9 @@ const login = async (req, res) => {
     try {
         const { query, release } = await database.connection();
         const { username, password } = req.body;
+        
+        console.log('llegue');
+        
 
         // Consulta al usuario en la base de datos
         const result = await query(`SELECT * FROM users WHERE username = '${username}'`);

@@ -46,9 +46,10 @@ export class EntradasComponent {
   generarEntradas(){
 
     if(this.cantidad_agregar <= 0){
-      alert('a')
+
     }else{
       this.apiService.createQR({cantidad: this.cantidad_agregar, id_evento: this.id}).subscribe((res)=>{
+        this.evento = {}
         this.cargarDatos()
       })
     }
@@ -65,7 +66,7 @@ export class EntradasComponent {
     const descFontSize = 14; // Reducir tamaño de fuente de la descripción
     const contentFontSize = 12; // Reducir tamaño de fuente del contenido
 
-    for (const entrada of this.entradas) {
+    for (const entrada of this.evento.entradas) {
       if (!entrada.uuid) {
         continue;
       }

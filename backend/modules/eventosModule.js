@@ -41,12 +41,11 @@ const getOneEvento = async (req, res) => {
     }
 
     
-    const entradas = evento[0].entradas;
+
   
     await release();
     res.json({
-      evento: evento[0],
-      entradas: entradas
+      evento: evento[0]
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
