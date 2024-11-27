@@ -41,15 +41,17 @@
         <div class="card text-center h-100 shadow-sm">
           <div class="card-body">
             <h5 class="card-title">Entrada ID: {{ entrada.id }}</h5>
-            <qrcode  [qrdata]="'http://192.168.0.11:8080/api/v1/validate/' + entrada.uuid"  class="img-fluid my-3" style="width: 150px; height: 150px;" ></qrcode>
-            <span class="badge" [ngClass]="entrada.usado === 0 ? 'bg-success' : 'bg-danger'">
+            <span class="badge align-content-center" [ngClass]="entrada.usado === 0 ? 'badge-outline-success' : 'badge-outline-danger'">
               {{ entrada.usado === 0 ? 'Válida' : 'Inválida' }}
             </span>
-
-            <!-- Botón de eliminar con icono de basura -->
-            <button class="btn btn-sm rounded-pill btn-danger ms-2" (click)="eliminarEntrada(entrada)">
-              <i class="bi bi-trash"></i>
-            </button>
+            <qrcode  [qrdata]="'http://192.168.0.11:8080/api/v1/validate/' + entrada.uuid"  class="img-fluid my-3" style="width: 150px; height: 150px;" ></qrcode>
+            <div class="d-flex justify-content-center align-items-center">              
+              <!-- Botón de eliminar con icono de basura -->
+              <button class="btn btn-sm rounded-pill btn-danger ms-2" (click)="eliminarEntrada(entrada)">
+                Eliminar
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
           </div>
         </div>
 

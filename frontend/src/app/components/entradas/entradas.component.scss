@@ -9,7 +9,7 @@
 
   .card {
     max-width: 210px;
-    max-height: 290px;
+    max-height: 300px;
     margin: auto;
   }
 
@@ -25,3 +25,14 @@
     height: 27px;
   }
 
+  .badge-outline-success {
+    color: #198754; /* Verde */
+    border: 1px solid #198754;
+    background-color: transparent;
+  }
+  
+  .badge-outline-danger {
+    color: #dc3545; /* Rojo */
+    border: 1px solid #dc3545;
+    background-color: transparent;
+  }

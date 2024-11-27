@@ -14,6 +14,7 @@ import { EntradasComponent } from './components/entradas/entradas.component';
 import { EventosComponent } from './components/eventos/eventos.component';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { AlertComponent } from './components/alert/alert.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { AlertComponent } from './components/alert/alert.component';
     EntradasComponent,
     EventosComponent,
     AlertComponent,
+    NavbarComponent,
 
   ],
   imports: [
