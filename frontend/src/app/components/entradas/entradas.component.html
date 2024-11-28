@@ -45,7 +45,7 @@
               {{ entrada.usado === 0 ? 'Válida' : 'Inválida' }}
             </span>
             <qrcode  [qrdata]="'http://192.168.0.11:8080/api/v1/validate/' + entrada.uuid"  class="img-fluid my-3" style="width: 150px; height: 150px;" ></qrcode>
-            <div class="d-flex justify-content-center align-items-center">              
+            <div class="d-flex justify-content-center align-items-center">
               <!-- Botón de eliminar con icono de basura -->
               <button class="btn btn-sm rounded-pill btn-danger ms-2" (click)="eliminarEntrada(entrada)">
                 Eliminar

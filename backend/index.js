@@ -27,10 +27,8 @@ app.use(middlewareModule.validateToken);
 
 // QR
 
-app.get("/api/v1/entradas/:id", entradasModule.getOneQR);
 app.get("/api/v1/validate/:uuid", entradasModule.leerQR);
 app.post('/api/v1/entradas', entradasModule.generarEntradas);
-app.patch('/api/v1/entradas/:id', entradasModule.updateQR);
 app.delete('/api/v1/entradas/:id', entradasModule.deleteQR);
 
 

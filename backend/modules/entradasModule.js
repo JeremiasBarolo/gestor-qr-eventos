@@ -16,7 +16,7 @@ const leerQR = async (req, res) => {
       
       
       if (evento.length === 0) {
-          return res.status(404).json({ message: "Evento no encontrado" });
+          return res.sendFile(path.join(__dirname, '../templates/basic-error.html'));
       }
       
       
@@ -45,23 +45,11 @@ const leerQR = async (req, res) => {
 
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.sendFile(path.join(__dirname, '../templates/basic-error.html'));
     }
 }
 
-const getOneQR = async (req, res) => {
-    try {
-        const { query, release } = await database.connection();
-        const { id } = req.params;
-        const { id_usuario } = req.TOKEN_DATA;
 
-        const QR = await query(`SELECT * FROM QRs WHERE id = ${id} AND id_usuario = ${id_usuario}`);
-        await release();
-        res.json(QR);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}
 
 const generarEntradas = async (req, res) => {
     try {
@@ -103,49 +91,6 @@ const generarEntradas = async (req, res) => {
     }
   };
 
-const updateQR = async (req, res) => {
-    try {
-        const { query, release } = await database.connection();
-        const { id } = req.params;
-        const { id_usuario } = req.TOKEN_DATA;
-        
-        const currentQR = await query(`SELECT * FROM QRs WHERE id = ${id} AND id_usuario = ${id_usuario}`);
-        if (currentQR.length === 0) {
-            await release();
-            return res.status(404).json({ error: 'QR no encontrado' });
-        }
-
-        
-        const nombre = req.body.nombre ?? currentQR[0].nombre;
-        const apellido = req.body.apellido ?? currentQR[0].apellido;
-        const fecha_nacimiento = req.body.fecha_nacimiento ?? currentQR[0].fecha_nacimiento;
-        const fecha_defuncion = req.body.fecha_defuncion ?? currentQR[0].fecha_defuncion;
-        const genero = req.body.genero ?? currentQR[0].genero;
-        const nacionalidad = req.body.nacionalidad ?? currentQR[0].nacionalidad;
-        const dni = req.body.dni ?? currentQR[0].dni;
-        const fecha_ingreso = req.body.fecha_ingreso ?? currentQR[0].fecha_ingreso;
-
-        await query(`
-            UPDATE QRs SET 
-                nombre = '${nombre}',
-                apellido = '${apellido}',
-                fecha_nacimiento = '${fecha_nacimiento}',
-                fecha_defuncion = '${fecha_defuncion}',
-                fecha_ingreso = '${fecha_ingreso}',
-                genero = '${genero}',
-                nacionalidad = '${nacionalidad}',
-                dni = '${dni}'
-                
-            WHERE id = ${id}
-        `);
-
-        await release();
-        res.json('QR actualizado');
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
 
 const deleteQR = async (req, res) => {
     try {
@@ -161,9 +106,7 @@ const deleteQR = async (req, res) => {
 }
 
 module.exports = {
-     leerQR,
-    getOneQR,
-    generarEntradas,
-    updateQR,
-    deleteQR
+  leerQR,
+  generarEntradas,
+  deleteQR
 }
