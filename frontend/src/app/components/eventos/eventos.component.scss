@@ -1,0 +1,122 @@
+.hover-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+  }
+  
+  .card-banner {
+    height: 100px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    .event-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      i {
+        color: white;
+        font-size: 1.8rem;
+      }
+    }
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .date-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #f7fafc;
+    border-radius: 9999px;
+    color: #4a5568;
+    font-size: 0.875rem;
+    
+    i {
+      color: #6366f1;
+    }
+  }
+  
+  .btn-action {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    border: none;
+    color: white;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+    
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  .btn-crear {
+    background-color: #6366f1;
+    color: white;
+    &:hover {
+      background-color: #4f46e5;
+    }
+  }
+  
+  .btn-view {
+    background-color: #6366f1;
+    &:hover {
+      background-color: #4f46e5;
+    }
+  }
+  
+  .btn-edit {
+    background-color: #10b981;
+    &:hover {
+      background-color: #059669;
+    }
+  }
+  
+  .btn-delete {
+    background-color: #ef4444;
+    &:hover {
+      background-color: #dc2626;
+    }
+  }
+  
+  .card {
+    background-color: ghostwhite;
+  }
+
+  .card-body {
+    display: flex;
+    justify-content: center; 
+    padding: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .col-md-4 {
+      padding: 0 0.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.1rem;
+    }
+  }

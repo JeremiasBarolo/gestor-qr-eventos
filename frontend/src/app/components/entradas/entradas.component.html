@@ -1,62 +1,78 @@
-
 <div class="container py-4">
-  <!-- Título del Evento -->
-  <h1 class="text-center mb-4">{{evento?.nombre_evento}}</h1>
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1 class="title">{{evento?.nombre_evento}}</h1>
 
-
-  <!-- Formulario Generar Entradas -->
-  <div class="d-flex justify-content-center mb-4">
-    <button *ngIf="mostrarCantidad" class="btn btn-success rounded-pill px-3 d-flex align-items-center gap-2" style="margin-right: 6px;" (click)="exportAllToPdf2(evento)">Exportar en Entradas</button>
-
-    <form class="d-flex align-items-center gap-2" (submit)="generarEntradas()">
-      <input
-        type="number"
-        class="form-control rounded-pill"
-        placeholder="Cantidad a agregar"
-        [(ngModel)]="cantidad_agregar"
-        name="cantidad_agregar"
-        required
-      />
-      <button
-          type="submit"
-          class="btn btn-primary rounded-pill px-3"
-          style="white-space: nowrap; min-width: 150px;"
-        >
-          Generar entradas
+    <!-- Actions Container -->
+    <div class="actions-wrapper">
+      <button 
+        *ngIf="mostrarCantidad" 
+        class="btn btn-export" 
+        (click)="exportAllToPdf2(evento)">
+        <i class="bi bi-file-pdf-fill"></i>
+        Exportar Entradas
       </button>
-    </form>
+
+      <form class="generate-form" (submit)="generarEntradas()">
+        <input
+          type="number"
+          class="form-control"
+          placeholder="Cantidad a agregar"
+          [(ngModel)]="cantidad_agregar"
+          name="cantidad_agregar"
+          required
+        />
+        <button type="submit" class="btn btn-generate">
+          <i class="bi bi-plus-circle-fill"></i>
+          Generar entradas
+        </button>
+      </form>
+    </div>
+
+    <div *ngIf="mostrarCantidad" class="tickets-count">
+      <i class="bi bi-ticket-perforated-fill"></i>
+      <span>Total de entradas: {{entradas?.length}}</span>
+    </div>
   </div>
+
   <app-alert></app-alert>
 
-  <!-- class="img-fluid my-3" -->
-  <!-- style="width: 150px; height: 150px;" -->
+  <!-- Tickets Grid -->
+  <div class="tickets-container">
+    <div class="tickets-grid">
+      <div class="ticket-item" *ngFor="let entrada of entradas">
+        <ng-container *ngIf="entrada.uuid">
+          <div class="ticket-card">
+            <div class="ticket-banner">
+              <div class="ticket-icon">
+                <i class="bi bi-ticket-perforated"></i>
+              </div>
+            </div>
+            
+            <div class="ticket-content">
+              <h5 class="ticket-id">Entrada #{{ entrada.id }}</h5>
+              
+              <div class="ticket-status" [class.valid]="entrada.usado === 0" [class.invalid]="entrada.usado === 1">
+                <i class="bi" [class.bi-check-circle-fill]="entrada.usado === 0" [class.bi-x-circle-fill]="entrada.usado === 1"></i>
+                <span>{{ entrada.usado === 0 ? 'Válida' : 'Inválida' }}</span>
+              </div>
 
+              <div class="qr-wrapper">
+                <qrcode 
+                  [qrdata]="'http://192.168.0.11:8080/api/v1/validate/' + entrada.uuid"
+                  [width]="150"
+                  [errorCorrectionLevel]="'M'"
+                ></qrcode>
+              </div>
 
-  <h4 class="text-center m-5" *ngIf="mostrarCantidad"> Cantidad de entradas: {{entradas?.length }}</h4>
-  <!-- Tarjetas de Entradas -->
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3" style="height: calc(100vh - 264px); overflow: auto;">
-    <div class="col" *ngFor="let entrada of entradas">
-
-      <ng-container *ngIf="entrada.uuid">
-        <div class="card text-center h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">Entrada ID: {{ entrada.id }}</h5>
-            <span class="badge align-content-center" [ngClass]="entrada.usado === 0 ? 'badge-outline-success' : 'badge-outline-danger'">
-              {{ entrada.usado === 0 ? 'Válida' : 'Inválida' }}
-            </span>
-            <qrcode  [qrdata]="'http://192.168.0.11:8080/api/v1/validate/' + entrada.uuid"  class="img-fluid my-3" style="width: 150px; height: 150px;" ></qrcode>
-            <div class="d-flex justify-content-center align-items-center">              
-              <!-- Botón de eliminar con icono de basura -->
-              <button class="btn btn-sm rounded-pill btn-danger ms-2" (click)="eliminarEntrada(entrada)">
-                Eliminar
-                <i class="bi bi-trash"></i>
+              <button class="btn btn-delete" (click)="eliminarEntrada(entrada)">
+                <i class="bi bi-trash3-fill"></i>
+                <span>Eliminar</span>
               </button>
             </div>
           </div>
-        </div>
-
-      </ng-container>
+        </ng-container>
+      </div>
     </div>
-
-
-
+  </div>
+</div>

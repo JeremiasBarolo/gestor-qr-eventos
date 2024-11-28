@@ -1,52 +1,56 @@
 <div class="container mt-5">
   <h1 class="text-center mb-4">Mis Eventos</h1>
   <div class="flex mb-4">
-    <button class="btn btn-primary rounded-pill px-3" type="button" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="action = 'crear'" >Crear Evento</button>
+    <button class="btn btn-crear rounded-pill px-3" type="button" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="action = 'crear'" >Crear Evento</button>
   </div>
   <app-alert></app-alert>
   <!-- Card -->
   <div class="row">
     <div class="col-md-4" *ngFor="let evento of eventosFiltrados">
-      <div class="card mb-3 shadow-sm">
-        <h4 class="card-title text-center mt-4">
+      <div class="card mb-3 hover-card">
+        <div class="card-banner">
+          <div class="event-icon">
+            <i class="bi bi-calendar-event"></i>
+          </div>
+        </div>
+        <h4 class="card-title text-center mt-3 px-3">
           {{ evento.nombre_evento }}
         </h4>
         <div class="card-body">
-
-
-          <p class="card-text text-muted text-center">
-            Fecha: <strong>{{ evento.fecha_evento | date: 'dd/MM/yyyy' }}</strong>
-          </p>
+          <div class="date-badge">
+            <i class="bi bi-calendar3"></i>
+            <span class="ms-2">{{ evento.fecha_evento | date: 'dd/MM/yyyy' }}</span>
+          </div>
         </div>
 
-        <div class="card-footer text-body-secondary d-flex justify-content-center gap-2">
+        <div class="card-footer bg-transparent border-0 d-flex justify-content-center gap-2 pb-3">
           <button
             type="button"
-            class="btn btn-secondary d-flex align-items-center gap-2"
+            class="btn btn-view btn-action"
             (click)="verEntradas(evento.id)">
-             Ver
+            <i class="bi bi-ticket-detailed me-1"></i>
+            Ver
           </button>
           <button
             type="button"
-            class="btn btn-primary d-flex align-items-center gap-2"
+            class="btn btn-edit btn-action"
             data-bs-dismiss="modal"
             data-bs-toggle="modal"
             data-bs-target="#crearModal"
             (click)="editar(evento)">
-            <i class="bi bi-pencil"></i>
+            <i class="bi bi-pencil-square"></i>
           </button>
-
           <button
             type="button"
-            class="btn btn-danger d-flex align-items-center gap-2"
+            class="btn btn-delete btn-action"
             (click)="eliminarEvento(evento.id, evento)">
-            <i class="bi bi-trash"></i>
+            <i class="bi bi-trash3"></i>
           </button>
         </div>
-
       </div>
     </div>
   </div>
+
 
 <!-- Button trigger modal -->
 
@@ -84,8 +88,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="crearEvento()" data-bs-dismiss="modal">Guardar</button>
+        <button type="button" class="btn btn-delete" data-bs-dismiss="modal" style="color: white;">Cerrar</button>
+        <button type="button" class="btn btn-edit" (click)="crearEvento()" data-bs-dismiss="modal" style="color: white;">Guardar</button>
 
       </div>
     </div>
