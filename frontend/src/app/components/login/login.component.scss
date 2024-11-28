@@ -1,5 +1,16 @@
 .gradient-custom {
+  background: linear-gradient(135deg, #009f2d, #00c943);
+}
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-background-image: url('../../../assets/login-bg.png');
-
+.logo {
+  width: 100px; /* Ajusta el tamaño del logo */
+  height: 100px; /* Mantén la proporción del logo */
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff; /* Opcional: agrega un borde blanco alrededor del logo */
 }

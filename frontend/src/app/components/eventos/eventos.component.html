@@ -1,11 +1,15 @@
 <div class="container mt-5">
   <h1 class="text-center mb-4">Mis Eventos</h1>
-  <div class="flex mb-4">
+  <div class="crear-button flex mb-4">
     <button class="btn btn-crear rounded-pill px-3" type="button" data-bs-toggle="modal" data-bs-target="#crearModal" (click)="action = 'crear'" >Crear Evento</button>
   </div>
   <app-alert></app-alert>
   <!-- Card -->
   <div class="row">
+    <div *ngIf="eventosFiltrados.length == 0" class="no-tickets-message text-center" style="margin-top: 175px;">
+      <i class="bi bi-info-circle-fill" style="font-size: 2rem; color: #6c757d;"></i>
+      <p class="mt-3">No hay eventos creados. Por favor, utiliza boton para generar nuevos eventos.</p>
+    </div>
     <div class="col-md-4" *ngFor="let evento of eventosFiltrados">
       <div class="card mb-3 hover-card">
         <div class="card-banner">
@@ -55,10 +59,10 @@
 <!-- Button trigger modal -->
 
 <!-- Modal -->
-<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" (hidden.bs.modal)="modalClose()">
+<div class="modal fade mt-10" id="crearModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: 100px;" (hidden.bs.modal)="modalClose()">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header" style="background-color: #007522; color: rgb(252, 252, 252);">
         <h1 class="modal-title fs-5" id="exampleModalLabel">{{action == 'crear' ? 'Crear' : 'Editar' }} Evento</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -89,7 +93,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-delete" data-bs-dismiss="modal" style="color: white;">Cerrar</button>
-        <button type="button" class="btn btn-edit" (click)="crearEvento()" data-bs-dismiss="modal" style="color: white;">Guardar</button>
+        <button type="button" class="btn btn-edit" (click)="crearEvento()" data-bs-dismiss="modal" style="color: white;" [disabled]="creando_evento || !nombre_evento || !fecha_evento">Guardar</button>
 
       </div>
     </div>

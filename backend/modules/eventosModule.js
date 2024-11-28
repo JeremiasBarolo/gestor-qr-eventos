@@ -26,7 +26,8 @@ const getOneEvento = async (req, res) => {
           JSON_OBJECT(
             'id', q.id,
             'uuid', q.uuid,
-            'usado', q.usado
+            'usado', q.usado,
+            'id_bloque', q.id_bloque
           )
         ) AS entradas
       FROM eventos e
@@ -35,6 +36,14 @@ const getOneEvento = async (req, res) => {
       GROUP BY e.id
     `);
 
+    const bloques = await query(`SELECT id_bloque FROM entradas WHERE id_evento = ${id} GROUP BY id_bloque`);
+    
+    const block = []
+    for (let i = 0; i < bloques.length; i++) {
+      const e = bloques[i];
+      block.push(e.id_bloque)
+    }
+    
    
 
     // Si no se encuentra el evento, devolver error 404
@@ -48,9 +57,12 @@ const getOneEvento = async (req, res) => {
     await release();
     res.json({
       evento,
-      entradas: evento.entradas
+      entradas: evento.entradas,
+      bloques: block
     });
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({ error: error.message });
   }
 };

@@ -18,6 +18,7 @@ export class EventosComponent {
   id_evento:any
   searchTerm: string = '';
   eventosFiltrados: any[] = [];
+  creando_evento = false
 
 
   constructor(
@@ -53,19 +54,32 @@ export class EventosComponent {
   }
 
   crearEvento(evento?:any) {
+    this.creando_evento = true
     let data = {
       nombre_evento: this.nombre_evento,
       fecha_evento: new Date(this.fecha_evento),
     };
 
+    if(!data.nombre_evento){
+      alert("El nombre del evento es obligatorio")
+      return
+    }
+
+    if(!data.fecha_evento){
+      alert("La fecha del evento es obligatoria")
+      return
+    }
+
+
     if (this.action == 'crear') {
-      this.apiService.createEventos(data).subscribe((res) => {
+      this.apiService.createEventos(data)
+      .subscribe((res) => {
         if (res) {
           this.eventos = [];
           this.cargarDatos();
           this.modalClose()
           this.alertComponent.triggerAlert(`Se creo exitosamente el evento`, 'success');
-
+          this.creando_evento = false
 
         }
       });
@@ -80,6 +94,7 @@ export class EventosComponent {
         }
       });
     }
+
   }
 
   editar(data: any) {
@@ -91,13 +106,15 @@ export class EventosComponent {
   }
 
   eliminarEvento(id: any, evento:any) {
-    this.apiService.deleteEventos(id).subscribe((res) => {
-      if (res) {
-        this.eventos = [];
-        this.cargarDatos();
-        this.alertComponent.triggerAlert(`Se elimino exitosamente el evento: ${evento.nombre_evento}`, 'success');
-      }
-    });
+    if(confirm("Confirma eliminar el evento?\nSe eliminaran todas las entradas asociadas")){
+      this.apiService.deleteEventos(id).subscribe((res) => {
+        if (res) {
+          this.eventos = [];
+          this.cargarDatos();
+          this.alertComponent.triggerAlert(`Se elimino exitosamente el evento: ${evento.nombre_evento}`, 'success');
+        }
+      });
+    }
   }
 
   verEntradas(id: number) {

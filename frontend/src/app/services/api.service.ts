@@ -10,10 +10,11 @@ export class ApiService {
 
   // ENDPOSINTS
   public API_URL = 'http://localhost:8080';
-  public EVENTOS_URL = 'http://localhost:8080/api/v1/eventos';
-  public ENTRADAS_URL = 'http://localhost:8080/api/v1/entradas';
-  public AUTH_URL = 'http://localhost:8080/api/v1/auth';
+  public EVENTOS_URL = `${this.API_URL}/api/v1/eventos`;
+  public ENTRADAS_URL = `${this.API_URL}/api/v1/entradas`;
+  public AUTH_URL =`${this.API_URL}/api/v1/auth`;
   public API_URL_QR = 'https://wrb2jzp3-8080.brs.devtunnels.ms/api/v1/validate'
+  // public API_URL_QR = `${this.API_URL}/api/v1/validate`
 
 
 

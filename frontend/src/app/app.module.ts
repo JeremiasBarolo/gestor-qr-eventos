@@ -15,6 +15,8 @@ import { EventosComponent } from './components/eventos/eventos.component';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { AlertComponent } from './components/alert/alert.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    QRCodeComponent
+    QRCodeComponent,
+    ScrollingModule,
+    MatProgressBarModule
   ],
 
   exports: [AlertComponent],

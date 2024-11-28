@@ -65,14 +65,22 @@ const generarEntradas = async (req, res) => {
       const entradas = [];
   
       
+      
+      
+      let id_bloque = 1
+      const result = await query("SELECT * FROM entradas WHERE id_evento = ? ORDER BY id_bloque DESC LIMIT 1", [id_evento]);
+      if(result.length > 0){
+        id_bloque = result[0].id_bloque + 1
+      }
+
       for (let i = 0; i < cantidad; i++) {
         const uuid = uuidv4(); 
-        entradas.push([uuid, 0, id_evento]);
+        entradas.push([uuid, 0, id_evento, id_bloque]);
       }
-  
+
       // Insertar las entradas en la base de datos
-      const values = entradas.map(() => `(?, ?, ?)`).join(', ');
-      const sql = `INSERT INTO entradas (uuid, usado, id_evento) VALUES ${values}`;
+      const values = entradas.map(() => `(?, ?, ?, ?)`).join(', ');
+      const sql = `INSERT INTO entradas (uuid, usado, id_evento, id_bloque) VALUES ${values}`;
       const flattenedValues = entradas.flat();
   
       await query(sql, flattenedValues);
@@ -87,6 +95,7 @@ const generarEntradas = async (req, res) => {
         total: cantidad
       });
     } catch (error) {
+      console.log(error)
       res.status(500).json({ error: error.message });
     }
   };
@@ -104,6 +113,8 @@ const deleteQR = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+
+
 
 module.exports = {
   leerQR,

@@ -20,11 +20,22 @@
 }
 
 .btn-export {
-  background-color: #059669;
+  background-color: #007522;
   color: white;
-  
+  white-space: nowrap;
+
   &:hover {
-    background-color: #059668d7;
+    opacity: 0.9;
+    background-color: #007522;
+  }
+}
+
+.btn-export-block {
+  background-color: #055c96;
+  color: white;
+
+  &:hover {
+    background-color: #044977;
   }
 }
 
@@ -32,14 +43,14 @@
   display: flex;
   gap: 1rem;
   align-items: center;
-  
+
   .form-control {
     width: 200px;
     padding: 0.625rem 1rem;
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
     transition: all 0.2s ease;
-    
+
     &:focus {
       outline: none;
       border-color: #6366f1;
@@ -49,13 +60,13 @@
 }
 
 .btn-generate {
-  background-color: #6366f1;
+  background-color: #007522;
   color: white;
   white-space: nowrap;
-  
+
   &:hover {
     opacity: 0.9;
-    background-color: #4f46e5;
+    background-color: #007522;
   }
 }
 
@@ -69,7 +80,7 @@
   color: var(--text-secondary);
   font-weight: 500;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  
+
   i {
     color: #6366f1;
     font-size: 1.2rem;
@@ -78,6 +89,14 @@
 
 .tickets-container {
   padding: 1rem;
+  height: calc(100vh - 368px);
+  overflow: auto;
+}
+
+.cdk-virtual-scroll-viewport {
+  height: 100%; /* Asegura que el contenedor ocupe toda la altura */
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  display: block;
 }
 
 .tickets-grid {
@@ -94,7 +113,7 @@
   transition: all 0.3s ease;
   height: 100%;
   animation: fadeIn 0.3s ease-out;
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -117,7 +136,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   i {
     color: white;
     font-size: 1.5rem;
@@ -147,12 +166,12 @@
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
-  
+
   &.valid {
     background-color: rgba(16, 185, 129, 0.1);
     color: #059669;
   }
-  
+
   &.invalid {
     background-color: rgba(239, 68, 68, 0.1);
     color: #dc2626;
@@ -172,9 +191,86 @@
   background-color: #dc2626;
   color: white;
   justify-content: center;
-  
+
   &:hover {
     background-color: #dc2626cb;
+  }
+}
+
+
+.tickets-container {
+  padding: 1rem;
+  height: calc(100vh - 368px);
+  overflow: auto;
+}
+
+.tickets-virtual-grid {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+.tickets-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columnas por fila */
+  gap: 1rem; /* Espaciado entre tarjetas */
+  margin-bottom: 1rem; /* Espaciado entre filas */
+}
+
+.ticket-card {
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.ticket-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-cont{
+  position: absolute;
+    margin-top: 1px;
+    width: 100%;
+    font-size: 0.7rem;
+    text-align: left;
+}
+
+.selected {
+  border: 2px solid #007bff;
+  background-color: #f0f8ff;
+}
+
+.card {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 1200px) {
+  .tickets-row {
+    grid-template-columns: repeat(3, 1fr); /* Cambiar a 3 columnas en pantallas medianas */
+  }
+}
+
+@media (max-width: 768px) {
+  .tickets-row {
+    grid-template-columns: repeat(2, 1fr); /* Cambiar a 2 columnas en pantallas pequeñas */
+  }
+}
+
+@media (max-width: 576px) {
+  .tickets-row {
+    grid-template-columns: 1fr; /* Una sola columna en pantallas muy pequeñas */
   }
 }
 
@@ -194,22 +290,23 @@
     flex-direction: column;
     padding: 0 1rem;
   }
-  
+
   .generate-form {
     width: 100%;
     flex-direction: column;
-    
+
     .form-control {
       width: 100%;
     }
-    
+
     .btn-generate {
       width: 100%;
     }
   }
-  
+
   .tickets-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 }
+

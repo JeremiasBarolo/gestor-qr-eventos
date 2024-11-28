@@ -5,13 +5,44 @@
 
     <!-- Actions Container -->
     <div class="actions-wrapper">
-      <button
-        *ngIf="mostrarCantidad"
-        class="btn btn-export"
-        (click)="exportAllToPdf2(evento)">
-        <i class="bi bi-file-pdf-fill"></i>
-        Exportar Entradas
-      </button>
+
+      <div style="position: relative;">
+        <button
+          *ngIf="mostrarCantidad"
+          class="btn btn-export"
+          [disabled]="exporting || exporting_block"
+          (click)="onExport(evento)">
+          <i class="bi bi-file-pdf-fill"></i>
+          Exportar todas las entradas
+        </button>
+        <div class="progress-cont" *ngIf="exporting">
+          <div>Generando archivo {{ progress | number: '1.2-2' }} %</div>
+          <mat-progress-bar mode="determinate" [value]="progress" track-height="100"></mat-progress-bar>
+        </div>
+      </div>
+
+      <div style="position: relative;">
+        <button
+          *ngIf="mostrarCantidad"
+          class="btn btn-export-block"
+          [disabled]="exporting || exporting_block"
+          data-bs-toggle="modal" data-bs-target="#blockModal">
+          <i class="bi bi-file-pdf-fill"></i>
+          Seleccionar bloque para generar entradas
+        </button>
+
+        <div class="progress-cont" *ngIf="exporting_block">
+          <div>Generando archivo {{ progress | number: '1.2-2' }} %</div>
+          <mat-progress-bar mode="determinate" [value]="progress" track-height="100"></mat-progress-bar>
+        </div>
+      </div>
+
+      <!-- <div style="position: relative;">
+        <select name="bloue" [(ngModel)]="selectedBlock" id="">
+          <option *ngFor="let b of bloques" [value]="b">BLOQUE {{b}} <span style="font-weight: bold;">({{ getCantidadEntradas(b) }} entradas)</span> </option>
+        </select>
+      </div> -->
+
 
       <form class="generate-form" (submit)="generarEntradas()">
         <input
@@ -24,7 +55,7 @@
         />
         <button type="submit" class="btn btn-generate">
           <i class="bi bi-plus-circle-fill"></i>
-          Generar entradas
+          Generar  entradas
         </button>
       </form>
     </div>
@@ -39,39 +70,82 @@
 
   <!-- Tickets Grid -->
   <div class="tickets-container">
-    <div class="tickets-grid">
-      <div class="ticket-item" *ngFor="let entrada of entradas">
-        <ng-container *ngIf="entrada.uuid">
-          <div class="ticket-card">
-            <div class="ticket-banner">
-              <div class="ticket-icon">
-                <i class="bi bi-ticket-perforated"></i>
-              </div>
-            </div>
+    <div *ngIf="mostrarMensaje" class="no-tickets-message text-center" style="margin-top: 175px;">
+      <i class="bi bi-info-circle-fill" style="font-size: 2rem; color: #6c757d;"></i>
+      <p class="mt-3">No hay entradas generadas. Por favor, utiliza el formulario para generar nuevas entradas.</p>
+    </div>
 
-            <div class="ticket-content">
-              <h5 class="ticket-id">Entrada #{{ entrada.id }}</h5>
-
-              <div class="ticket-status" [class.valid]="entrada.usado === 0" [class.invalid]="entrada.usado === 1">
-                <i class="bi" [class.bi-check-circle-fill]="entrada.usado === 0" [class.bi-x-circle-fill]="entrada.usado === 1"></i>
-                <span>{{ entrada.usado === 0 ? 'Válida' : 'Inválida' }}</span>
-              </div>
-
-              <div class="qr-wrapper">
-                <qrcode
-                  [qrdata]="entrada.api_url"
-                  [width]="150"
-                  [errorCorrectionLevel]="'M'"
-                ></qrcode>
-              </div>
-
-              <button class="btn btn-delete" (click)="eliminarEntrada(entrada)">
-                <i class="bi bi-trash3-fill"></i>
-                <span>Eliminar</span>
-              </button>
+    <cdk-virtual-scroll-viewport itemSize="300" class="tickets-virtual-grid" *ngIf="!mostrarMensaje">
+      <div *cdkVirtualFor="let row of chunkedEntradas" class="tickets-row">
+        <div *ngFor="let entrada of row; let i = index" class="ticket-card">
+          <div class="ticket-banner">
+            <div class="ticket-icon">
+              <i class="bi bi-ticket-perforated"></i>
             </div>
           </div>
-        </ng-container>
+
+          <div class="ticket-content">
+            <h5 class="ticket-id">Entrada #{{ i + 1 }}</h5>
+
+            <div
+              class="ticket-status"
+              [class.valid]="entrada?.estado === 'Válida'"
+              [class.used]="entrada?.estado === 'Entrada ya usada'"
+              [class.invalid]="entrada?.estado === 'Entrada inválida'">
+              <i
+                class="bi"
+                [class.bi-check-circle-fill]="entrada?.estado === 'Válida'"
+                [class.bi-x-circle-fill]="entrada?.estado === 'Entrada ya usada'"
+                [class.bi-exclamation-circle-fill]="entrada?.estado === 'Entrada inválida'"></i>
+              <span>{{ entrada.estado }}</span>
+            </div>
+
+            <div class="qr-wrapper">
+              <qrcode
+                [qrdata]="entrada.api_url"
+                [width]="150"
+                [errorCorrectionLevel]="'M'">
+              </qrcode>
+            </div>
+
+            <button class="btn btn-success" style="width: 100%;" (click)="exportarEntrada(entrada)">
+              <i class="bi bi-file-pdf-fill" style="margin-right: 10px;"></i>
+              <span>Exportar entrada</span>
+            </button>
+
+            <button class="btn btn-delete" (click)="eliminarEntrada(entrada)">
+              <i class="bi bi-trash3" style="margin-right: 10px;"></i>
+              <span>Eliminar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  </div>
+</div>
+
+
+<div class="modal fade" id="blockModal" tabindex="-1" aria-labelledby="blockModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="blockModalLabel">Seleccionar un bloque</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Mostrar las cards de los bloques -->
+        <div *ngFor="let b of bloques" class="card mb-1" [ngClass]="{'selected': selectedBlock === b}" (click)="selectBlock(b)">
+          <div class="card-body">
+
+            <h5 class="card-title">BLOQUE {{b}}</h5>
+            <p class="card-text">Entradas disponibles: {{ getCantidadEntradas(b) }} entradas</p>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="onExport(evento, true)"data-bs-dismiss="modal">Confirmar selección</button>
       </div>
     </div>
   </div>
