@@ -5,9 +5,9 @@
 
     <!-- Actions Container -->
     <div class="actions-wrapper">
-      <button 
-        *ngIf="mostrarCantidad" 
-        class="btn btn-export" 
+      <button
+        *ngIf="mostrarCantidad"
+        class="btn btn-export"
         (click)="exportAllToPdf2(evento)">
         <i class="bi bi-file-pdf-fill"></i>
         Exportar Entradas
@@ -48,18 +48,18 @@
                 <i class="bi bi-ticket-perforated"></i>
               </div>
             </div>
-            
+
             <div class="ticket-content">
               <h5 class="ticket-id">Entrada #{{ entrada.id }}</h5>
-              
+
               <div class="ticket-status" [class.valid]="entrada.usado === 0" [class.invalid]="entrada.usado === 1">
                 <i class="bi" [class.bi-check-circle-fill]="entrada.usado === 0" [class.bi-x-circle-fill]="entrada.usado === 1"></i>
                 <span>{{ entrada.usado === 0 ? 'Válida' : 'Inválida' }}</span>
               </div>
 
               <div class="qr-wrapper">
-                <qrcode 
-                  [qrdata]="'http://192.168.0.11:8080/api/v1/validate/' + entrada.uuid"
+                <qrcode
+                  [qrdata]="entrada.api_url"
                   [width]="150"
                   [errorCorrectionLevel]="'M'"
                 ></qrcode>

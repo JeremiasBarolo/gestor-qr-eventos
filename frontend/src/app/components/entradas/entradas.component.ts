@@ -23,6 +23,7 @@ export class EntradasComponent {
   entradas:any
   cantidad_agregar = 0
   mostrarCantidad:boolean = false
+  apiUrl:any
   constructor(
     private route: ActivatedRoute,
     private apiService:ApiService,
@@ -31,6 +32,8 @@ export class EntradasComponent {
     this.route.params.subscribe(params => {
       this.id = params['id'] || null;
     });
+
+    this.apiUrl = this.apiService.API_URL_QR
   }
 
   @ViewChild(AlertComponent) alertComponent!: AlertComponent;
@@ -44,6 +47,10 @@ export class EntradasComponent {
       if(res){
         this.evento = res.evento[0]
         this.entradas = res.evento[0].entradas
+
+        this.entradas.map((entrada:any)=>{
+          entrada.api_url = `${this.apiUrl}/${entrada.uuid}`
+        })
 
         if(this.entradas[0].uuid){
           this.mostrarCantidad = true
